@@ -12,7 +12,7 @@ public class Annonymas {
 		A obj = new A()
 				{
 					public void show(){
-						System.out.println("B class");
+						System.out.println("Bc class");
 					}
 			
 				};
