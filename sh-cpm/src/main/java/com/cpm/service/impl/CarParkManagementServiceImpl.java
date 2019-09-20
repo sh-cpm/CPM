@@ -13,6 +13,7 @@ public class CarParkManagementServiceImpl implements CarParkManagementService {
 	
 	public CarParkManagementServiceImpl (){
 		carParkManagementdao = new CarParkManagementDaoImpl();
+		CarParks = carParkManagementdao.getCarPark();
 		
 	}
 	

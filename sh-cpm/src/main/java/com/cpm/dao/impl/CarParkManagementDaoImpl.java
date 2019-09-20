@@ -13,6 +13,7 @@ import com.cpm.model.CarPark;
 
 
 
+
 public class CarParkManagementDaoImpl implements CarParkManagementdao{
 	private final String SAVE_TICKET_NO_PATH = "src/main/resources/Ticket";
     private final String SAVE_TICKETNO_LICENSE_PATH = "src/main/resources/CarPark";
@@ -30,7 +31,18 @@ public class CarParkManagementDaoImpl implements CarParkManagementdao{
                 result = 5000;
                 writeFile(SAVE_TICKET_NO_PATH,new String[]{"5000"});
             }
-        } catch (IOException e){
+        } catch (FileNotFoundException e) {
+            try {
+                Boolean fileCreated = new File(SAVE_TICKET_NO_PATH).createNewFile();
+                if(fileCreated){
+                    result = generateTicketNo();
+                }else{
+                    System.err.println("Unknown error while creating a new Ticket file.");
+                }
+            } catch (IOException e1) {
+                System.err.println("Error while creating a new Ticket file: " + e1.getMessage());
+            }
+        }catch (IOException e){
             System.err.println("Error while writing the Ticket file: " + e.getMessage());
         }
         return result;
@@ -59,7 +71,36 @@ public class CarParkManagementDaoImpl implements CarParkManagementdao{
         }
     }
 	
-	
+	@Override
+    public CarPark[] getCarPark() {
+		CarPark[] parkedCars = new CarPark[10];
+        File file = new File(SAVE_TICKETNO_LICENSE_PATH);
+        try(BufferedReader br = new BufferedReader(new FileReader(file))){
+            String rawLine;
+            String[] parsedLine;
+            int index = 0;
+            while ((rawLine = br.readLine()) != null){
+                if(!rawLine.isEmpty()) {
+                    parsedLine = rawLine.split(",");
+                    parkedCars[index] = new CarPark(parsedLine[1], Integer.valueOf(parsedLine[0]));
+                }
+                index++;
+            }
+        } catch (FileNotFoundException e) {
+            try {
+                Boolean fileCreated = new File(SAVE_TICKETNO_LICENSE_PATH).createNewFile();
+                if(!fileCreated){
+                    System.err.println("Unknown error while creating a new CarPark file.");
+                }
+                //Not giving another chance because it would return an empty array anyways.
+            } catch (IOException e1) {
+                System.err.println("Error while creating a new CarPark file: " + e1.getMessage());
+            }
+        }catch (IOException e){
+            System.err.println("Error while writing the CarPark file: " + e.getMessage());
+        }
+        return parkedCars;
+    }
 	
 	private void writeFile(String fileName, String[] content) throws FileNotFoundException, UnsupportedEncodingException {
         PrintWriter writer = new PrintWriter(fileName, "UTF-8");
