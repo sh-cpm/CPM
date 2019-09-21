@@ -1,5 +1,8 @@
 package com.cpm.service.impl;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import com.cpm.dao.CarParkManagementdao;
 import com.cpm.dao.impl.CarParkManagementDaoImpl;
 import com.cpm.model.CarPark;
@@ -27,6 +30,7 @@ public class CarParkManagementServiceImpl implements CarParkManagementService {
             	CarParks[i] = new CarPark(licencePlate, ticketNo);
             	carParkManagementdao.saveCarParkDetails(CarParks);
                 parkSuccessful = true;
+                System.out.println("Park successfully");
             }
         }
         if(!parkSuccessful){
@@ -42,11 +46,33 @@ public class CarParkManagementServiceImpl implements CarParkManagementService {
             	CarParks[i] = null;
             	carParkManagementdao.saveCarParkDetails(CarParks);
                 unparkSuccessful = true;
+                System.out.println("UnPark successfully");
             }
         }
         if(!unparkSuccessful){
             System.err.println("This ticket number is not present!");
         }
+    }
+	@Override
+    public void carCompact(){
+		
+        CarPark[] CompactCarParks = new CarPark[10];
+        Queue<Integer> parkingQueue = new LinkedList<>();
+
+        for(int i = 0; i<10;i++){
+            if(CarParks[i] == null){
+            	parkingQueue.add(i);
+            }else{
+                if(parkingQueue.isEmpty()){
+                	CompactCarParks[i] = CarParks[i];
+                }else{
+                	CompactCarParks[parkingQueue.poll()] = CarParks[i];
+                	parkingQueue.add(i);
+                }
+            }
+        }
+        CompactCarParks = CompactCarParks;
+        carParkManagementdao.saveCarParkDetails(CompactCarParks);
     }
 	
 	@Override

@@ -38,6 +38,9 @@ public class CpmMain {
                 	break;
                 case 'u':
                 	carParkManagementService.carUnpark(Integer.valueOf(s.split("u")[1]));
+                	break;
+                case 'c':
+                	carParkManagementService.carCompact();
 				
 			}
 			
