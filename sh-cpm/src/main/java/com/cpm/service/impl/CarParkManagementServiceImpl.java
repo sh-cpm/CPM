@@ -30,9 +30,23 @@ public class CarParkManagementServiceImpl implements CarParkManagementService {
             }
         }
         if(!parkSuccessful){
-            System.err.println("There is no empty place in car park !");
+            System.err.println("Car park space is not available!");
         }
         return ticketNo;
+    }
+	@Override
+    public void carUnpark(int ticketNumber){
+        boolean unparkSuccessful = false;
+        for(int i = 0; i<10 && !unparkSuccessful; i++){
+            if(CarParks[i] != null && CarParks[i].getTicketNo() == ticketNumber){
+            	CarParks[i] = null;
+            	carParkManagementdao.saveCarParkDetails(CarParks);
+                unparkSuccessful = true;
+            }
+        }
+        if(!unparkSuccessful){
+            System.err.println("This ticket number is not present!");
+        }
     }
 	
 	@Override
